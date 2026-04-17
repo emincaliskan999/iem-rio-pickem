@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>IEM Rio 2025 — Pick'em</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161920;
+    --surface2: #1e2230;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --accent: #3b82f6;
+    --accent-glow: rgba(59,130,246,0.18);
+    --win-bg: rgba(59,130,246,0.12);
+    --win-text: #60a5fa;
+    --gold: #f5c518;
+    --green: #22c55e;
+    --amber: #f59e0b;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* BG TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 10%, rgba(59,130,246,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(99,102,241,0.05) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 32px 20px 60px; }
+
+  /* HEADER */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .iem-icon {
+    width: 48px; height: 48px;
+    background: linear-gradient(135deg, #1e2a4a 0%, #0d1525 100%);
+    border: 1px solid rgba(59,130,246,0.3);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .header-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+  .header-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 3px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .xbet-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #0e2244;
+    border: 1px solid rgba(59,130,246,0.25);
+    border-radius: 10px;
+    padding: 8px 14px;
+    text-decoration: none;
+  }
+  .xbet-logo {
+    width: 36px; height: 36px;
+    border-radius: 6px;
+    object-fit: contain;
+    background: transparent;
+  }
+  .xbet-text { line-height: 1.2; }
+  .xbet-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 17px; font-weight: 900;
+    color: #fff; letter-spacing: 0.04em;
+  }
+  .xbet-name span { color: var(--gold); }
+  .xbet-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* BRACKET */
+  .bracket {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+  .bracket::-webkit-scrollbar { height: 4px; }
+  .bracket::-webkit-scrollbar-track { background: var(--surface); border-radius: 2px; }
+  .bracket::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  .round { display: flex; flex-direction: column; min-width: 210px; }
+  .round-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 700;
+    color: var(--muted);
+    text-align: center;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding-bottom: 12px;
+  }
+
+  /* MATCH CARD */
+  .match {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    width: 202px;
+    margin: 6px 0;
+    transition: border-color 0.2s;
+  }
+  .match:hover { border-color: var(--border2); }
+  .match-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 11px 4px;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.03em;
+  }
+  .match-meta .fmt {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    color: #4b5563;
+    font-size: 11px;
+  }
+
+  /* TEAM ROW */
+  .team-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 11px;
+    border-top: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .team-row:hover:not(.tbd):not(.locked) { background: var(--surface2); }
+  .team-row.tbd { cursor: default; opacity: 0.35; }
+  .team-row.locked { cursor: default; }
+  .team-row.winner {
+    background: var(--win-bg);
+    border-top-color: rgba(59,130,246,0.15);
+  }
+  .team-row.loser { opacity: 0.3; }
+
+  .team-logo {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    object-fit: contain;
+    flex-shrink: 0;
+    background: var(--surface2);
+  }
+  .team-logo-placeholder {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 9px; color: var(--muted);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+  }
+  .team-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .team-row.winner .team-name { color: var(--win-text); font-weight: 600; }
+
+  .odds {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 5px;
+    flex-shrink: 0;
+  }
+  .odds.fav { color: var(--green); background: rgba(34,197,94,0.1); }
+  .odds.dog { color: var(--amber); background: rgba(245,158,11,0.1); }
+
+  .tick {
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .team-row.winner .tick { opacity: 1; }
+
+  /* CONNECTOR */
+  .conn {
+    display: flex;
+    align-items: center;
+    padding-top: 42px;
+    width: 32px;
+    flex-shrink: 0;
+  }
+
+  /* GRAND FINAL */
+  .gf-round { min-width: 210px; }
+  .champ-bar {
+    padding: 8px 11px 10px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+  .champ-label {
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .champ-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px; font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.03em;
+  }
+
+  /* RESET */
+  .actions { margin-top: 24px; display: flex; justify-content: center; }
+  .reset-btn {
+    background: transparent;
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 8px 24px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.03em;
+  }
+  .reset-btn:hover { background: var(--surface2); color: var(--text); border-color: rgba(255,255,255,0.2); }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 11px;
+    color: #374151;
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 600px) {
+    .header-title { font-size: 22px; }
+    .page { padding: 20px 12px 40px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <div class="iem-icon">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <circle cx="14" cy="14" r="10" stroke="#3b82f6" stroke-width="1.5"/>
+          <circle cx="14" cy="14" r="5" stroke="#3b82f6" stroke-width="1.5"/>
+          <circle cx="14" cy="14" r="2" fill="#3b82f6"/>
+          <line x1="14" y1="4" x2="14" y2="7" stroke="#3b82f6" stroke-width="1.5"/>
+          <line x1="14" y1="21" x2="14" y2="24" stroke="#3b82f6" stroke-width="1.5"/>
+          <line x1="4" y1="14" x2="7" y2="14" stroke="#3b82f6" stroke-width="1.5"/>
+          <line x1="21" y1="14" x2="24" y2="14" stroke="#3b82f6" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div>
+        <div class="header-title">IEM Rio 2025</div>
+        <div class="header-sub">CS2 · Playoff Pick'em</div>
+      </div>
+    </div>
+    <div class="xbet-badge">
+      <img src="images/1xbet.png" class="xbet-logo" alt="1xbet" onerror="this.style.display='none'"/>
+      <div class="xbet-text">
+        <div class="xbet-name">1<span>XBET</span></div>
+        <div class="xbet-label">Bahis Oranları</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BRACKET -->
+  <div class="bracket" id="bracket"></div>
+
+  <!-- ACTIONS -->
+  <div class="actions">
+    <button class="reset-btn" onclick="resetAll()">↺ Sıfırla</button>
+  </div>
+
+  <div class="footer">IEM Rio 2025 · CS2 Playoff · emincaliskan999</div>
+</div>
+
+<script>
+const BASE = 'images/';
+const TEAMS = {
+  spirit:   { name: 'Team Spirit',    img: BASE+'spirit.png'   },
+  mouz:     { name: 'MOUZ',           img: BASE+'mouz.png'     },
+  vitality: { name: 'Team Vitality',  img: BASE+'vitality.png' },
+  navi:     { name: 'Natus Vincere',  img: BASE+'navi.png'     },
+  falcons:  { name: 'Falcons',        img: BASE+'falcons.png'  },
+  furia:    { name: 'FURIA',          img: BASE+'furia.png'    },
+};
+
+const state = { qf1: null, qf2: null, sf1: null, sf2: null, gf: null };
+
+function pick(matchId, teamId) {
+  if (!teamId) return;
+  state[matchId] = state[matchId] === teamId ? null : teamId;
+  // cascade invalidation
+  if (matchId === 'qf1') {
+    if (state.sf1 && !['falcons', state.qf1].includes(state.sf1)) state.sf1 = null;
+  }
+  if (matchId === 'qf2') {
+    if (state.sf2 && !['furia', state.qf2].includes(state.sf2)) state.sf2 = null;
+  }
+  if (matchId === 'sf1' || matchId === 'sf2') {
+    if (state.gf && ![state.sf1, state.sf2].includes(state.gf)) state.gf = null;
+  }
+  render();
+}
+
+function pickGF(tid) {
+  if (!state.sf1 || !state.sf2) return;
+  state.gf = state.gf === tid ? null : tid;
+  render();
+}
+
+function resetAll() {
+  Object.keys(state).forEach(k => state[k] = null);
+  render();
+}
+
+function logoEl(teamId) {
+  if (!teamId) {
+    return `<div class="team-logo-placeholder">?</div>`;
+  }
+  const t = TEAMS[teamId];
+  return `<img class="team-logo" src="${t.img}" alt="${t.name}" onerror="this.outerHTML='<div class=team-logo-placeholder>${t.name.slice(0,2).toUpperCase()}</div>'"/>`;
+}
+
+function teamRow(matchId, teamId, opts = {}) {
+  const isTbd = !teamId;
+  const winner = state[matchId];
+  const isW = !isTbd && winner === teamId;
+  const isL = !isTbd && winner && winner !== teamId;
+  const cls = isTbd ? 'tbd' : isW ? 'winner' : isL ? 'loser' : '';
+  const name = teamId ? TEAMS[teamId].name : 'TBD';
+  const clickAttr = isTbd || matchId === 'gf' ? '' : `onclick="pick('${matchId}','${teamId}')"`;
+  const gfClick = matchId === 'gf' && !isTbd ? `onclick="pickGF('${teamId}')"` : '';
+
+  let oddsHtml = '';
+  if (opts.odds) {
+    oddsHtml = `<span class="odds ${opts.fav ? 'fav' : 'dog'}">${opts.odds}</span>`;
+  }
+
+  const tick = `<svg class="tick" width="13" height="13" viewBox="0 0 13 13">
+    <polyline points="2,6.5 5.5,10 11,3" stroke="#60a5fa" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`;
+
+  return `<div class="team-row ${cls}" ${clickAttr}${gfClick}>
+    ${logoEl(teamId)}
+    <span class="team-name">${name}</span>
+    ${oddsHtml}
+    ${tick}
+  </div>`;
+}
+
+function matchCard(id, time, fmt, t1, t2, t1o = {}, t2o = {}) {
+  return `<div class="match">
+    <div class="match-meta">
+      <span>${time}</span>
+      <span class="fmt">${fmt}</span>
+    </div>
+    ${teamRow(id, t1, t1o)}
+    ${teamRow(id, t2, t2o)}
+  </div>`;
+}
+
+function connectorSVG() {
+  return `<div class="conn">
+    <svg width="32" height="136" viewBox="0 0 32 136" fill="none">
+      <path d="M0,34 Q16,34 16,68 Q16,102 0,102" stroke="rgba(255,255,255,0.1)" stroke-width="1" fill="none"/>
+      <line x1="16" y1="68" x2="32" y2="68" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+    </svg>
+  </div>`;
+}
+
+function render() {
+  let h = '';
+
+  // QF
+  h += `<div class="round">
+    <div class="round-label">Quarter-finals</div>
+    ${matchCard('qf1','18:00 · Bugün','BO3','mouz','spirit',{odds:'2.27'},{odds:'1.66',fav:true})}
+    ${matchCard('qf2','21:15 · Bugün','BO3','vitality','navi',{odds:'1.32',fav:true},{odds:'3.52'})}
+  </div>`;
+
+  h += connectorSVG();
+
+  // SF
+  const sf1t2 = state.qf1 || null;
+  const sf2t2 = state.qf2 || null;
+  h += `<div class="round">
+    <div class="round-label">Semi-finals</div>
+    ${matchCard('sf1','18:00 · Cumartesi','BO3','falcons', sf1t2)}
+    ${matchCard('sf2','21:15 · Cumartesi','BO3','furia', sf2t2)}
+  </div>`;
+
+  h += connectorSVG();
+
+  // GF
+  const gfT1 = state.sf1 || null;
+  const gfT2 = state.sf2 || null;
+  const gfW = state.gf;
+
+  const gfRow = (tid) => {
+    const isTbd = !tid;
+    const t = tid ? TEAMS[tid] : null;
+    const isW = gfW === tid;
+    const isL = gfW && gfW !== tid && tid;
+    const cls = isTbd ? 'tbd' : isW ? 'winner' : isL ? 'loser' : '';
+    const tick = `<svg class="tick" width="13" height="13" viewBox="0 0 13 13">
+      <polyline points="2,6.5 5.5,10 11,3" stroke="#60a5fa" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`;
+    return `<div class="team-row ${cls}" ${isTbd ? '' : `onclick="pickGF('${tid}')"`}>
+      ${logoEl(tid)}
+      <span class="team-name">${t ? t.name : 'TBD'}</span>
+      ${tick}
+    </div>`;
+  };
+
+  let champBar = '';
+  if (gfW && TEAMS[gfW]) {
+    champBar = `<div class="champ-bar">
+      <div class="champ-label">🏆 Şampiyon</div>
+      <div class="champ-name">${TEAMS[gfW].name}</div>
+    </div>`;
+  }
+
+  h += `<div class="gf-round">
+    <div class="round-label">Grand Final</div>
+    <div class="match">
+      <div class="match-meta">
+        <span>20:00 · Pazar</span>
+        <span class="fmt">BO5</span>
+      </div>
+      ${gfRow(gfT1)}
+      ${gfRow(gfT2)}
+      ${champBar}
+    </div>
+  </div>`;
+
+  document.getElementById('bracket').innerHTML = h;
+}
+
+render();
+</script>
+</body>
+</html>
