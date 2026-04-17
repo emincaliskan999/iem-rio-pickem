@@ -257,7 +257,80 @@
     letter-spacing: 0.03em;
   }
 
-  /* RESET */
+  /* WATERMARK */
+  .bracket-wrap {
+    position: relative;
+  }
+  .watermark {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .watermark img {
+    width: 480px;
+    max-width: 80%;
+    opacity: 0.04;
+    filter: grayscale(1);
+    user-select: none;
+  }
+  .bracket {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* JOIN THE FUN CTA */
+  .cta-wrap {
+    display: none;
+    margin-top: 28px;
+    justify-content: center;
+  }
+  .cta-wrap.visible { display: flex; }
+  .cta-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: linear-gradient(135deg, #0a2a5e 0%, #0e3a80 100%);
+    border: 1px solid #14a0ff44;
+    border-radius: 14px;
+    padding: 14px 28px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    box-shadow: 0 0 32px rgba(20,160,255,0.1);
+  }
+  .cta-btn:hover {
+    border-color: #14a0ff88;
+    box-shadow: 0 0 48px rgba(20,160,255,0.2);
+    transform: translateY(-1px);
+  }
+  .cta-xbet-logo {
+    height: 36px;
+    object-fit: contain;
+  }
+  .cta-text { line-height: 1.3; }
+  .cta-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 0.03em;
+  }
+  .cta-sub {
+    font-size: 11px;
+    color: #14a0ff;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .cta-arrow {
+    font-size: 20px;
+    color: #14a0ff;
+    margin-left: 4px;
+  }
   .actions { margin-top: 24px; display: flex; justify-content: center; }
   .reset-btn {
     background: transparent;
@@ -317,7 +390,24 @@
   </div>
 
   <!-- BRACKET -->
-  <div class="bracket" id="bracket"></div>
+  <div class="bracket-wrap">
+    <div class="watermark">
+      <img src="images/1xbet.png" alt=""/>
+    </div>
+    <div class="bracket" id="bracket"></div>
+  </div>
+
+  <!-- JOIN THE FUN CTA -->
+  <div class="cta-wrap" id="cta">
+    <a class="cta-btn" href="https://1xbet.com" target="_blank" rel="noopener">
+      <img src="images/1xbet.png" class="cta-xbet-logo" alt="1xbet"/>
+      <div class="cta-text">
+        <div class="cta-title">Join the fun</div>
+        <div class="cta-sub">Place your picks on 1xbet</div>
+      </div>
+      <span class="cta-arrow">→</span>
+    </a>
+  </div>
 
   <!-- ACTIONS -->
   <div class="actions">
@@ -472,6 +562,9 @@ function render() {
       <div class="champ-label">🏆 Champion</div>
       <div class="champ-name">${TEAMS[gfW].name}</div>
     </div>`;
+    document.getElementById('cta').classList.add('visible');
+  } else {
+    document.getElementById('cta').classList.remove('visible');
   }
 
   h += `<div class="gf-round">
