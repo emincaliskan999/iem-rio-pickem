@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>IEM Rio 2025 — Pick'em</title>
+<title>IEM Rio 2025 — Pick'em Bracket</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
@@ -20,8 +20,8 @@
     --win-bg: rgba(59,130,246,0.12);
     --win-text: #60a5fa;
     --gold: #f5c518;
-    --green: #22c55e;
-    --amber: #f59e0b;
+    --odds-color: #14a0ff;
+    --odds-bg: rgba(20,160,255,0.1);
     --radius: 10px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -82,24 +82,30 @@
   }
   .xbet-badge {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 4px;
     background: #0e2244;
     border: 1px solid rgba(59,130,246,0.25);
     border-radius: 10px;
     padding: 8px 14px;
-    text-decoration: none;
   }
   .xbet-logo {
-    width: 36px; height: 36px;
-    border-radius: 6px;
+    width: 120px;
+    height: 44px;
     object-fit: contain;
-    background: transparent;
+    display: block;
+  }
+  .xbet-label {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
   }
   .xbet-text { line-height: 1.2; }
   .xbet-name {
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 17px; font-weight: 900;
+    font-size: 22px; font-weight: 900;
     color: #fff; letter-spacing: 0.04em;
   }
   .xbet-name span { color: var(--gold); }
@@ -211,8 +217,8 @@
     border-radius: 5px;
     flex-shrink: 0;
   }
-  .odds.fav { color: var(--green); background: rgba(34,197,94,0.1); }
-  .odds.dog { color: var(--amber); background: rgba(245,158,11,0.1); }
+  .odds.fav { color: var(--odds-color); background: var(--odds-bg); }
+  .odds.dog { color: var(--odds-color); background: var(--odds-bg); }
 
   .tick {
     flex-shrink: 0;
@@ -305,11 +311,8 @@
       </div>
     </div>
     <div class="xbet-badge">
-      <img src="images/1xbet.png" class="xbet-logo" alt="1xbet" onerror="this.style.display='none'"/>
-      <div class="xbet-text">
-        <div class="xbet-name">1<span>XBET</span></div>
-        <div class="xbet-label">Bahis Oranları</div>
-      </div>
+      <img src="images/1xbet.png" class="xbet-logo" alt="1xbet"/>
+      <div class="xbet-label">Odds by</div>
     </div>
   </div>
 
@@ -318,10 +321,10 @@
 
   <!-- ACTIONS -->
   <div class="actions">
-    <button class="reset-btn" onclick="resetAll()">↺ Sıfırla</button>
+    <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
   </div>
 
-  <div class="footer">IEM Rio 2025 · CS2 Playoff · emincaliskan999</div>
+  <div class="footer">IEM Rio 2025 · CS2 Playoff · Pick your bracket</div>
 </div>
 
 <script>
@@ -425,8 +428,8 @@ function render() {
   // QF
   h += `<div class="round">
     <div class="round-label">Quarter-finals</div>
-    ${matchCard('qf1','18:00 · Bugün','BO3','mouz','spirit',{odds:'2.27'},{odds:'1.66',fav:true})}
-    ${matchCard('qf2','21:15 · Bugün','BO3','vitality','navi',{odds:'1.32',fav:true},{odds:'3.52'})}
+    ${matchCard('qf1','18:00 · Today','BO3','mouz','spirit',{odds:'2.27'},{odds:'1.66',fav:true})}
+    ${matchCard('qf2','21:15 · Today','BO3','vitality','navi',{odds:'1.32',fav:true},{odds:'3.52'})}
   </div>`;
 
   h += connectorSVG();
@@ -436,8 +439,8 @@ function render() {
   const sf2t2 = state.qf2 || null;
   h += `<div class="round">
     <div class="round-label">Semi-finals</div>
-    ${matchCard('sf1','18:00 · Cumartesi','BO3','falcons', sf1t2)}
-    ${matchCard('sf2','21:15 · Cumartesi','BO3','furia', sf2t2)}
+    ${matchCard('sf1','18:00 · Saturday','BO3','falcons', sf1t2)}
+    ${matchCard('sf2','21:15 · Saturday','BO3','furia', sf2t2)}
   </div>`;
 
   h += connectorSVG();
@@ -466,7 +469,7 @@ function render() {
   let champBar = '';
   if (gfW && TEAMS[gfW]) {
     champBar = `<div class="champ-bar">
-      <div class="champ-label">🏆 Şampiyon</div>
+      <div class="champ-label">🏆 Champion</div>
       <div class="champ-name">${TEAMS[gfW].name}</div>
     </div>`;
   }
@@ -475,7 +478,7 @@ function render() {
     <div class="round-label">Grand Final</div>
     <div class="match">
       <div class="match-meta">
-        <span>20:00 · Pazar</span>
+        <span>20:00 · Sunday</span>
         <span class="fmt">BO5</span>
       </div>
       ${gfRow(gfT1)}
