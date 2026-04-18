@@ -114,7 +114,7 @@
   /* BRACKET */
   .bracket {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 0;
     overflow-x: auto;
     padding-bottom: 8px;
@@ -220,6 +220,19 @@
   .odds.fav { color: var(--odds-color); background: var(--odds-bg); }
   .odds.dog { color: var(--odds-color); background: var(--odds-bg); }
 
+  .odds-wrap {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+  }
+  .xbet-mini {
+    height: 16px;
+    object-fit: contain;
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+
   .tick {
     flex-shrink: 0;
     opacity: 0;
@@ -231,7 +244,7 @@
   .conn {
     display: flex;
     align-items: center;
-    padding-top: 42px;
+    padding-top: 0;
     width: 32px;
     flex-shrink: 0;
   }
@@ -470,7 +483,10 @@ function teamRow(matchId, teamId, opts = {}) {
 
   let oddsHtml = '';
   if (opts.odds) {
-    oddsHtml = `<span class="odds ${opts.fav ? 'fav' : 'dog'}">${opts.odds}</span>`;
+    oddsHtml = `<div class="odds-wrap">
+      <span class="odds ${opts.fav ? 'fav' : 'dog'}">${opts.odds}</span>
+      <img src="images/1xbet.png" class="xbet-mini" alt="1xbet"/>
+    </div>`;
   }
 
   const tick = `<svg class="tick" width="13" height="13" viewBox="0 0 13 13">
@@ -511,8 +527,8 @@ function render() {
   // SF — now the starting round
   h += `<div class="round">
     <div class="round-label">Semi-finals</div>
-    ${matchCard('sf1','18:00 · Today','BO3','falcons','spirit',{odds:'1.59',fav:true},{odds:'2.379'})}
-    ${matchCard('sf2','21:15 · Today','BO3','furia','vitality',{odds:'3.405'},{odds:'1.32',fav:true})}
+    ${matchCard('sf1','18:00 · Today','BO3','falcons','spirit',{odds:'1.59',fav:true},{odds:'2.37'})}
+    ${matchCard('sf2','21:15 · Today','BO3','furia','vitality',{odds:'3.40'},{odds:'1.32',fav:true})}
   </div>`;
 
   h += connectorSVG();
