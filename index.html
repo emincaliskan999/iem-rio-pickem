@@ -428,18 +428,11 @@ const TEAMS = {
   furia:    { name: 'FURIA',          img: BASE+'furia.png'    },
 };
 
-const state = { qf1: null, qf2: null, sf1: null, sf2: null, gf: null };
+const state = { sf1: null, sf2: null, gf: null };
 
 function pick(matchId, teamId) {
   if (!teamId) return;
   state[matchId] = state[matchId] === teamId ? null : teamId;
-  // cascade invalidation
-  if (matchId === 'qf1') {
-    if (state.sf1 && !['falcons', state.qf1].includes(state.sf1)) state.sf1 = null;
-  }
-  if (matchId === 'qf2') {
-    if (state.sf2 && !['furia', state.qf2].includes(state.sf2)) state.sf2 = null;
-  }
   if (matchId === 'sf1' || matchId === 'sf2') {
     if (state.gf && ![state.sf1, state.sf2].includes(state.gf)) state.gf = null;
   }
@@ -515,22 +508,11 @@ function connectorSVG() {
 function render() {
   let h = '';
 
-  // QF
-  h += `<div class="round">
-    <div class="round-label">Quarter-finals</div>
-    ${matchCard('qf1','18:00 · Today','BO3','mouz','spirit',{odds:'2.27'},{odds:'1.66',fav:true})}
-    ${matchCard('qf2','21:15 · Today','BO3','vitality','navi',{odds:'1.32',fav:true},{odds:'3.52'})}
-  </div>`;
-
-  h += connectorSVG();
-
-  // SF
-  const sf1t2 = state.qf1 || null;
-  const sf2t2 = state.qf2 || null;
+  // SF — now the starting round
   h += `<div class="round">
     <div class="round-label">Semi-finals</div>
-    ${matchCard('sf1','18:00 · Saturday','BO3','falcons', sf1t2)}
-    ${matchCard('sf2','21:15 · Saturday','BO3','furia', sf2t2)}
+    ${matchCard('sf1','18:00 · Today','BO3','falcons','spirit',{odds:'1.59',fav:true},{odds:'2.379'})}
+    ${matchCard('sf2','21:15 · Today','BO3','furia','vitality',{odds:'3.405'},{odds:'1.32',fav:true})}
   </div>`;
 
   h += connectorSVG();
