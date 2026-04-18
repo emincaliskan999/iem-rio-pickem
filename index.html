@@ -210,27 +210,35 @@
   }
   .team-row.winner .team-name { color: var(--win-text); font-weight: 600; }
 
-  .odds {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 13px; font-weight: 700;
-    padding: 2px 6px;
-    border-radius: 5px;
-    flex-shrink: 0;
-  }
-  .odds.fav { color: var(--odds-color); background: var(--odds-bg); }
-  .odds.dog { color: var(--odds-color); background: var(--odds-bg); }
-
   .odds-wrap {
     display: flex;
     align-items: center;
     gap: 5px;
     flex-shrink: 0;
   }
-  .xbet-mini {
-    height: 16px;
-    object-fit: contain;
-    opacity: 0.7;
+  .odds {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px; font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 6px;
+    background: #1a2a4a;
+    color: var(--odds-color);
     flex-shrink: 0;
+    line-height: 1;
+  }
+  .xbet-mini-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1a2a4a;
+    border-radius: 6px;
+    padding: 4px 8px;
+    height: 30px;
+    flex-shrink: 0;
+  }
+  .xbet-mini {
+    height: 18px;
+    object-fit: contain;
   }
 
   .tick {
@@ -484,8 +492,8 @@ function teamRow(matchId, teamId, opts = {}) {
   let oddsHtml = '';
   if (opts.odds) {
     oddsHtml = `<div class="odds-wrap">
-      <span class="odds ${opts.fav ? 'fav' : 'dog'}">${opts.odds}</span>
-      <img src="images/1xbet.png" class="xbet-mini" alt="1xbet"/>
+      <span class="odds">${opts.odds}</span>
+      <div class="xbet-mini-box"><img src="images/1xbet.png" class="xbet-mini" alt="1xbet"/></div>
     </div>`;
   }
 
